@@ -64,6 +64,15 @@ public class Position{
         this.x = x;
         this.y = y;
     }
+
+    /**
+     * Custom toString for help in debugging
+     */
+    public String toString(){
+        return "("+x+","+y+")";
+    }
+
+
     /** 
      * Moves position North (up)
      */
