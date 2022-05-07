@@ -5,7 +5,7 @@
  * @author Ross Petridis | Rpetridis@student.unimelb.edu.au | 1080249
  *
  */
-
+import java.util.Scanner;
 import java.util.ArrayList;
 
 public class World {
@@ -14,9 +14,9 @@ public class World {
     private Player player;
     private Monster monster;  // change to be array list of monster!
     private Map map;
-
+    private ArrayList<Entity> entities;
     /**
-     * World Constructor
+     * Default World Constructor
      * @param player a Player object of the player to occupy this world.
      * @param monster a Monster object of the monster to occupy this world.
      */
@@ -25,13 +25,51 @@ public class World {
         // will need to add getter and setter methods for accessing levels and changing form this class.
         this.player = player; 
         this.monster = monster; 
+        entities = new ArrayList<Entity>();
+        entities.add(player);
+        entities.add(monster);
         map = new Map();
     }
 
-    public World(Player player, String fileName){
+    public World(Player player, Scanner inputStream){ //GAME ENGINE SHOULD SET UP FILE STREAM
         this.player = player;
-        map = new Map(fileName);
-        
+        entities = new ArrayList<Entity>();
+        entities.add(player);
+        map = new Map(inputStream);
+        // map read top seciton, then anothe function reads te entities section
+        //map = new Map(fileName);
+        injectEntities(inputStream);
+    }
+
+    private void injectEntities(Scanner inputStream){
+        //String Line;
+        String[] entityData;
+        while (inputStream.hasNextLine()){
+            entityData = inputStream.nextLine().split(" ");
+            
+            switch(entityData[0]){
+                case "player":
+                    player.setPosition(Integer.parseInt(entityData[1]), Integer.parseInt(entityData[2]));
+                    entities.add(player);
+                    break;
+                case "monster":
+                    entities.add(new Monster(
+                        Integer.parseInt(entityData[1]),  // x pos
+                        Integer.parseInt(entityData[2]),  // y pos
+                        entityData[3], // Name
+                        Integer.parseInt(entityData[4]), // Health
+                        Integer.parseInt(entityData[5])  // Damage
+                    ));
+                    break;
+                case "item":
+                    entities.add(new Item(
+                        Integer.parseInt(entityData[1]), 
+                        Integer.parseInt(entityData[1]), 
+                        entityData[3]
+                    ));
+                    break;
+                }
+        }
     }
 
     /**
@@ -40,11 +78,12 @@ public class World {
      * @return True if the player and monster encounter each other, else, returns False if player returns to home.
      */
     public boolean runSearchScene(){
-		boolean validAction = true;
+		boolean validAction = true; // originally had it to only re-render if valid input
 		String cmd;
+        /*
         ArrayList<Entity> entities = new ArrayList<Entity>();
         entities.add(player);
-        entities.add(monster);
+        entities.add(monster); */
 		while (!encountered()){ // while not encountered yet.
             System.out.println("bop");
 			map.render(entities);
@@ -131,6 +170,7 @@ public class World {
      * @return Returns True if the monster and player have the same positions, else False. 
      */
     public boolean encountered(){
+        // now need to scan through entities and check for each Monster and then fight this exact monster object.
         // returns true if monster and player and in the same position.
         return player.getPosition().positionEquals(monster.getPosition());
     } 

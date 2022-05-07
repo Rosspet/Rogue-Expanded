@@ -22,6 +22,13 @@ public class Monster extends Creature{
         
     }
 
+    public Monster(int x, int y, String name, int health, int damage){
+        super(x,y);
+        setName(name);
+        setHealth(health);
+        setMaxHealth(health);
+        setDamage(damage);
+    }
     /**
      * Displays monsters name a health for use in the main menu
      */

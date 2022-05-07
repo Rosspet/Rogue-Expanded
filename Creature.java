@@ -86,6 +86,6 @@ public abstract class Creature extends Entity implements Fightable {
         this.health = health;
     }
 
-
+    
 
 }

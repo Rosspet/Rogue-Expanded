@@ -1,7 +1,8 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-
-public class Map {
+import java.util.Scanner;
+public class Map { // TODO throws exception IO wtv it is (and also for main when making stream)
     
     // why where these static when in the world file?
     private static final int DEFAULT_HEIGHT = 4;
@@ -32,8 +33,28 @@ public class Map {
     /** 
      * Map constructor for when given fileName;
      */
-    public Map(String fileName){
-        
+    public Map(Scanner inputStream){
+        try {
+            String line = inputStream.nextLine();
+            String[] size = line.split(" ");
+            width = Integer.parseInt(size[0]);
+            height = Integer.parseInt(size[1]);
+            tiles = new Tile[height][];
+            String[] terrainRow;
+
+            for (int row=0; row<height; row++){
+                tiles[row] = new Tile[width];
+                terrainRow = inputStream.nextLine().split("");
+                for (int col=0; col<width; col++){
+                    tiles[row][col] = new Tile(terrainRow[col]);
+                }
+            } // should have finished reading just before entities.
+
+        }
+        catch (Exception e) { // more speific error?
+            System.err.println("Error reading from " + GameEngine.getFileName() + ".");
+            System.err.println(e.getMessage());
+        }
     }
     /**
      * Recieves array list of all entities and injects them to the maps tiles, to render correct thing.!

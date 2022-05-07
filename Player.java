@@ -126,5 +126,9 @@ public class Player extends Creature{
     public void render(){
         System.out.print(Character.toUpperCase(getName().charAt(0)));
     }
+
+    public void increaseHealth(){
+        // CHECK NOT PASSING THE MAXIMUM HEALTH!!
+    }
 }
 

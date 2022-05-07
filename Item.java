@@ -1,3 +1,6 @@
+// IDEA . Have a powerups interface that the player class implements.
+
+
 public class Item extends Entity{
     
     private String itemID; 
