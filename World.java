@@ -64,7 +64,7 @@ public class World {
                 case "item":
                     entities.add(new Item(
                         Integer.parseInt(entityData[1]), 
-                        Integer.parseInt(entityData[1]), 
+                        Integer.parseInt(entityData[2]), 
                         entityData[3]
                     ));
                     break;
@@ -84,6 +84,7 @@ public class World {
         ArrayList<Entity> entities = new ArrayList<Entity>();
         entities.add(player);
         entities.add(monster); */
+        map.render(entities); // REMOVE LATER
 		while (!encountered()){ // while not encountered yet.
             System.out.println("bop");
 			map.render(entities);
