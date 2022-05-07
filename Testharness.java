@@ -23,7 +23,7 @@ public class Testharness {
         
         Position pos1 = new Position(0,0);
         myPositions.add(pos1);
-
+        
         Position pos2 = new Position(1,1);
         myPositions.add(pos2);
 

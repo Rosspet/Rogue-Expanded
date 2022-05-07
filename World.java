@@ -68,7 +68,7 @@ public class World {
                         entityData[3]
                     ));
                     break;
-                }
+                }2
         }
     }
 
@@ -171,10 +171,13 @@ public class World {
      * @return Returns True if the monster and player have the same positions, else False. 
      */
     public boolean encountered(){
+        // have this return anything the player encounters
+        return false;
         // now need to scan through entities and check for each Monster and then fight this exact monster object.
         // returns true if monster and player and in the same position.
         return player.getPosition().positionEquals(monster.getPosition());
     } 
+    
 
     /**
      * Resets the players Position to its default initial values.
