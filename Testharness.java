@@ -2,23 +2,25 @@
 import java.util.ArrayList; // import the ArrayList class
 import java.util.Iterator;
 
-public class playground {
+public class Testharness {
     
     
     
 
     public static void main(String[] args) {
         
-        int numPositions = 0;
-        ArrayList<Position> myPositions = new ArrayList<Position>();
+        //int numPositions = 0;
+        //ArrayList<Position> myPositions = new ArrayList<Position>();
 
+        Position position = new Position();
+        System.out.println(position);
         /*
         for (int i=0; i<2; i++){
             Position pos = new Position(i,3);
             myPositions.add(pos);
             numPositions+=1;
         }
-        */
+        
         Position pos1 = new Position(0,0);
         myPositions.add(pos1);
 
@@ -35,6 +37,7 @@ public class playground {
         if (position instanceof ThreeDPosition){
             System.out.println("YES"); // yay this works. can use this to check if player or monster or item in list of entities :) - SAVED we can (1) can as in store in one big asf array so as to keep track of what was added first
         }
+        */
         
         
         //System.out.println(position);

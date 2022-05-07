@@ -1,3 +1,4 @@
+
 import java.util.Scanner;
 
 /**
@@ -6,23 +7,18 @@ import java.util.Scanner;
  * and in battle.
  * @author Ross Petridis | rpetridis@gmail.com | 1080249
  */
-public class Monster {
+public class Monster extends Creature{
 
     private static final int INITIAL_POS_X = 4;
     private static final int INITIAL_POS_Y = 2;
     
-    private String name;
-    private int health;
-    private int maxHealth;
-    private int damage;
-    private Position position;
 
     /**
      * monster Constructor which initialises their position.
      */
     public Monster(){
         //currently all monsters set to same initial position.
-        position = new Position(INITIAL_POS_X,INITIAL_POS_Y); // starting position for monster 
+        setPosition(new Position(INITIAL_POS_X,INITIAL_POS_Y)); // starting position for monster 
         
     }
 
@@ -31,7 +27,7 @@ public class Monster {
      */
     public void displayNameAndHealth(){
         System.out.print("Monster: ");
-        if(name!=null){
+        if(getName()!=null){
             displayStatus();
         } 
         else{
@@ -41,10 +37,10 @@ public class Monster {
     }
 
     /** 
-     * Displays the monsters status for use in the battle
+     * Displays the monsters status for use in the battle. Slightly different to player.
      */
     public void displayStatus(){
-        System.out.print(name + " " + health + "/" + maxHealth + "\n");
+        System.out.print(getName() + " " + getHealth() + "/" + getMaxHealth() + "\n");
     }
 
     /**
@@ -55,60 +51,22 @@ public class Monster {
         
         Scanner scanner = GameEngine.scanner;
         System.out.print("Monster name: ");
-        name = scanner.next();
+        setName(scanner.next());
 
         System.out.print("Monster health: ");
         GameEngine.validIntegerInput();
-        maxHealth = scanner.nextInt();
-        health=maxHealth;
+        int healthInput = scanner.nextInt();
+        setMaxHealth(healthInput);
+        setHealth(healthInput);
 
         System.out.print("Monster damage: ");
         GameEngine.validIntegerInput();
-        damage = scanner.nextInt();
-        System.out.println("Monster '" + name + "' created.\n");
+        setDamage(scanner.nextInt());
+        System.out.println("Monster '" + getName() + "' created.\n");
     }
 
-    /**
-     * Return monsters name
-     * @return The monsters name (String)
-     */
-    public String getName(){
-        return name;
+    public void render(){
+        System.out.print(Character.toLowerCase(getName().charAt(0)));
     }
     
-    /**
-     * Heal monster to maxHealth
-     */
-    public void heal(){
-        health=maxHealth;
-    }
-    
-    /**
-     * Return a copy of this monsters position
-     */
-    public Position getPosition(){
-        //retuirn a copy to ensure proper safe encapsulation. So other classes cant direcctly access value
-        return new Position(position); 
-    }
-    
-    /**
-     * Decrease the health of this monster by "damage" amount
-     * @param damage The amount to reduce the health by
-     * @return Returns True if the monster is dead
-     */
-    public boolean hurt(int damage){
-        
-        health-=damage;
-        if (health<=0){
-            return true;//monster is dead
-        }
-        return false; // not dead
-    }
-
-    /**
-     * Returns the damage this monster can deal
-     */
-    public int getDamage(){
-        return damage;
-    }
 }

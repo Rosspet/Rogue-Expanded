@@ -1,12 +1,11 @@
 import java.util.Scanner;
-
 /**
  * This "Player" class is used to create player objects to store information 
  * about each player. This class comes with methods for updating a players position.
  * @author Ross Petridis | rpetridis@student.unimelb.edu.au | 1080249
  *
  */
-public class Player {
+public class Player extends Creature{
 
     private static final int INITIAL_POS_X = 1;
     private static final int INITIAL_POS_Y = 1;
@@ -15,36 +14,41 @@ public class Player {
     private static final int INITIAL_HEALTH = 17;
     private static final int HEALTH_MULTIPLIER = 3;
 
-    private String name;
     private int level;
-    private int damage; 
-    private int maxHealth;
-    private int health;
-    private Position position = new Position(INITIAL_POS_X,INITIAL_POS_Y);
+
+    //private Position position = new Position(INITIAL_POS_X,INITIAL_POS_Y);
     
     /**
      * No arg constructor for initialisation of player and its attributes to default.
      */
     public Player(){
         level = INITIAL_LEVEL; 
-        damage = INITIAL_DAMAGE + level;
-        maxHealth = INITIAL_HEALTH + level * HEALTH_MULTIPLIER;
-        health = maxHealth; // health initialised to max!
-
+        setDamage(INITIAL_DAMAGE + level);
+        setHealth(INITIAL_HEALTH + level * HEALTH_MULTIPLIER);
+        setMaxHealth(getHealth()); // health initialised to max!
+    }
+    /**
+     * Constructor for when loading from file
+     */
+    public Player(String name, int level){
+        this.level = INITIAL_LEVEL; 
+        setDamage(INITIAL_DAMAGE + level);
+        setHealth(INITIAL_HEALTH + level * HEALTH_MULTIPLIER);
+        setMaxHealth(getHealth()); // health initialised to max!
     }
 
     /**
      * This method is used to set the non default player attributes, such as the name.
      */
     public void createPlayer(){
-        if (name!=null){
+        if (getName()!=null){
             printPlayerInfo();
         }
         else{
             Scanner scanner = GameEngine.scanner;
             System.out.println("What is your character's name?");
-            name = scanner.next();
-            System.out.println(String.format("Player '%s' created.\n", name));
+            setName(scanner.next()); 
+            System.out.println(String.format("Player '%s' created.\n", getName()));
         }      
     }
 
@@ -54,7 +58,7 @@ public class Player {
     public void displayNameAndHealth(){
 
         System.out.print("Player: ");
-        if(name != null){
+        if(getName() != null){
             displayStatus();//name + " " + health + "/" + maxHealth;
         } 
         else{
@@ -67,62 +71,16 @@ public class Player {
      * Displays a players status for during battle.
      */
     public void displayStatus(){
-        System.out.print(name + " " + health + "/" + maxHealth);
+        System.out.print(getName() + " " + getHealth() + "/" + getMaxHealth());
     }
 
     /**
      * Logic for printing a players information in the main menu.
      */
     public void printPlayerInfo(){
-            System.out.println(String.format("%s (Lv. %d)", name, level));
-			System.out.println("Damage: " + damage);
-			System.out.print(String.format("Health: %d/%d\n\n", health, maxHealth));
-    }
-
-    /**
-     * heals player to their max health
-     */
-    public void heal(){
-        health=maxHealth;
-    }
-
-    /**
-     * Get players position.
-     * @return Returns a copy of the players position to avoid data leak.
-     */
-    public Position getPosition(){
-        return new Position(position); 
-    }
-
-    /*
-    The below "move" methods call updates to the players position. The players position is not 
-    avaiable to be updated from the world as it was made private due to data leak concerns.
-    Thus, these methods are required to enable position changes from the world class.
-    */
-
-    /**
-     * Moves player east.
-     */
-    public void movePlayerEast(){
-        position.moveEast();
-    }
-    /**
-     * Moves player west
-     */
-    public void movePlayerWest(){
-        position.moveWest();
-    }
-    /**
-     * Moves player north
-     */
-    public void movePlayerNorth(){
-        position.moveNorth();
-    }
-    /**
-     * Move player south
-     */
-    public void movePlayerSouth(){
-        position.moveSouth();
+            System.out.println(String.format("%s (Lv. %d)", getName(), getLevel()));
+			System.out.println("Damage: " + getDamage());
+			System.out.print(String.format("Health: %d/%d\n\n", getHealth(), getMaxHealth()));
     }
 
     /**
@@ -133,16 +91,16 @@ public class Player {
     public void undoMove(String action){
         switch (action){
             case "w":
-                movePlayerSouth();
+                moveSouth();
                 break;
             case "s":
-                movePlayerNorth();
+                moveNorth();
                 break;
             case "d":
-                movePlayerWest();
+                moveWest();
                 break;
             case "a":
-                movePlayerEast();
+                moveEast();
                 break;
             default:
                 System.out.println("Internal Error: Code called UndowMove with invalid action");
@@ -152,40 +110,21 @@ public class Player {
     }
 
     /**
-     * Hurts a player by decreasing their health 
-     * @param damage The amount to decrease the players health by.
-     * @return Returns True if the player is dead.
-     */
-    public boolean hurt(int damage){
-        health-=damage;
-        if (health<=0){
-            return true;
-        }
-        return false; // not dead
-    } 
-
-    /**
      * Resets a players positon to the initial default values.
      */
     public void resetPosition(){
-        position.setPosition(INITIAL_POS_X, INITIAL_POS_Y);
+        setPosition(INITIAL_POS_X, INITIAL_POS_Y);
     }
     
-    public String getName(){
-        return name;
-    }
     public int getLevel(){
         return level;
     }
-    public int getDamage(){
-        return damage;
-    }
-    public int getMaxHealth(){
-        return maxHealth;
-    }
-    public int getHealth(){
-        return health;
+    public void setLevel(int level){
+        this.level = level;
     }
 
+    public void render(){
+        System.out.print(Character.toUpperCase(getName().charAt(0)));
+    }
 }
 

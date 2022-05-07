@@ -1,10 +1,11 @@
+
 /**
  * This class can be used to make position objects which can store an entities x,y coordinates.
  * This class comes with methods for moving a position in each of 4 basic 
  * compass direcitons: N,S,E,W. 
  * @author Ross Petridis | rpetridis@student.unimelb.edu.au | 1080249
  */
-public class Position{
+public class Position{  // ENTITY HAS ALL THESE PUBLIC THINGS - including the movings.
     private int x;
     private int y;
     
@@ -36,13 +37,14 @@ public class Position{
         y=1;
     }
     
+    
     /**
      * Returns true if the inputted coordinates match this objects position
      * @param x
      * @param y
      * @return
      */
-    public boolean equals(int x, int y){
+    public boolean positionEquals(int x, int y){
         // returns true if inputted x and y equal this position objhects x and y
         return (this.x==x && this.y==y);
     }
@@ -51,7 +53,7 @@ public class Position{
      * @param position
      * @return
      */
-    public boolean equals(Position position){
+    public boolean positionEquals(Position position){
         // returns true if inputted x and y equal this position objhects x and y
         return (this.x==position.x && this.y==position.y);
     }
@@ -63,6 +65,11 @@ public class Position{
     public void setPosition(int x, int y){
         this.x = x;
         this.y = y;
+    }
+
+    public void setPosition(Position position){
+        this.x = position.getX();
+        this.y = position.getY();
     }
 
     /**
@@ -104,6 +111,9 @@ public class Position{
     public int getY(){
         return y;
     }
-
+    
+    public Position getPosition(){
+        return new Position(x,y);
+    }
 }
     

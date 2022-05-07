@@ -9,10 +9,11 @@ public class GameEngine {
 
 	private Player player = new Player(); 
 	private Monster monster = new Monster();
+	private String fileName;
 	/** scanner object for the game to read from System.in */
 	public static Scanner scanner = new Scanner(System.in);
 	private static final String CMD_PROMPT = "> ";
-
+	public static boolean defaultMap;
 	public static void main(String[] args) {
 		
 		GameEngine gameEngine = new GameEngine();
@@ -51,8 +52,10 @@ public class GameEngine {
 	 * @param command The inputted command from stdin.
 	 */
 	private void parseCommand(String command){
-		
-		switch (command) {
+		String[] args = command.split(" ");
+		String base_cmd = args[0];
+
+		switch (base_cmd) {
 			case "player":
 				player.createPlayer();
 				returnToMain(); 
@@ -76,14 +79,30 @@ public class GameEngine {
 				if (player.getName()==null){
 					System.out.println("No player found, please create a player with 'player' first.\n");
 					returnToMain();
+					break;
 				}
-				else if (monster.getName()==null){
-					System.out.println("No monster found, please create a monster with 'monster' first.\n");
-					returnToMain();
+				
+				if (args.length<=1){
+					// start default game.
+					if (monster.getName()==null){
+						System.out.println("No monster found, please create a monster with 'monster' first.\n");
+						returnToMain();
+						break;
+					}
+					else {
+						// have player and not loading entities from file (default map)
+						player.heal();
+						monster.heal();
+						defaultMap = true;
+						startGame();
+					}
 				}
 				else {
+					// have player and loading rest from file. 
+					//Start was entered with file name. 
+					String fileName = args[1]; // check for valid file - raise appropriate exception if not.
 					player.heal();
-					monster.heal();
+					defaultMap = false;
 					startGame();
 				}
 				break;
@@ -93,6 +112,28 @@ public class GameEngine {
 		}
 
 	}
+
+	/**
+	 * Engine logic for starting the game. Creates a world and begins the search 
+	 * scene until the player and monster have encounterd each other. At this 
+	 * point, the battle scene is instatiated and run.
+	 */
+	private void startGame(){
+		World world = defaultMap ? new World(player, monster) : new World(player, fileName);
+		//World world = new World(player, monster); // make a variable of GameEngine.
+		boolean encountered = world.runSearchScene();
+		
+		if (encountered){
+			Battle battle = new Battle(player, monster);
+			battle.runBattleScene();			
+		}
+		else {
+			System.out.println("\n> Returning home...\n");
+		}
+		returnToMain();
+		world.reset(); // assuming no save of positions at this stage as nothing in specification re keeping positions if returning home or finished game.
+	}
+
 
 	/**
 	 * Called when its time to return to main. Awaits for enter input before 
@@ -136,25 +177,7 @@ public class GameEngine {
 
 	}
 
-	/**
-	 * Engine logic for starting the game. Creates a world and begins the search 
-	 * scene until the player and monster have encounterd each other. At this 
-	 * point, the battle scene is instatiated and run.
-	 */
-	private void startGame(){
-		
-		World world = new World(player, monster); // make a variable of GameEngine.
-		boolean encountered = world.runSearchScene();
-		
-		if (encountered){
-			Battle battle = new Battle(player, monster);
-			battle.runBattleScene();			
-		}
-		else {
-			System.out.println("\n> Returning home...\n");
-		}
-		returnToMain();
-		world.reset(); // assuming no save of positions at this stage as nothing in specification re keeping positions if returning home or finished game.
-	}
+	
+	
 
 }
