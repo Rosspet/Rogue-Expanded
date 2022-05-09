@@ -150,8 +150,10 @@ public class GameEngine {
 		boolean encountered = world.runSearchScene();
 		
 		if (encountered){
-			Battle battle = new Battle(player, monster);
-			battle.runBattleScene();			
+			//Battle battle = new Battle(player, monster);
+			//battle.runBattleScene();	
+			//NEW ...
+			//level up player etc.	
 		}
 		else {
 			System.out.println("\n> Returning home...\n");

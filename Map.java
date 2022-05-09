@@ -85,7 +85,7 @@ public class Map { // TODO throws exception IO wtv it is (and also for main when
     public boolean isValidPosition(Position pos){
         int x = pos.getX();
         int y = pos.getY();
-        return 0<=x && x<width && 0<=y && y<height;
+        return 0<=x && x<width && 0<=y && y<height && (tiles[y][x].isTraversible());
     }
 
     /* public void addToMap(Entity entity){

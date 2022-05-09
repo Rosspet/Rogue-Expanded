@@ -23,11 +23,13 @@ public class Battle {
 
 	/**
 	 * Logic for running the battle scene. The player and monster takes turns
-	 * exchanging attacks until either dies.
+	 * exchanging attacks until either dies. // returns true if player dead, false if monster dead
 	 */
-	public void runBattleScene(){
-		boolean monsterDead=false, playerDead=false;
+	public boolean runBattleScene(){
 
+		System.out.println(player.getName() + " encountered a " + monster.getName() + "!\n");
+		boolean monsterDead=false, playerDead=false;
+		
 		while(true) { // while neither are dead yet.
 			displayStatuses();
 
@@ -36,7 +38,7 @@ public class Battle {
 			monsterDead = monster.hurt(player.getDamage());
 			if(monsterDead){
 				displayWinner(player.getName());
-				break;
+				return false;
 			}
 
 			// monster attack.
@@ -44,7 +46,7 @@ public class Battle {
 			playerDead = player.hurt(monster.getDamage()); 
 			if (playerDead){
 				displayWinner(monster.getName());
-				break;
+				return true;
 			}
 			System.out.println("");
 		} 

@@ -130,5 +130,40 @@ public class Player extends Creature{
     public void increaseHealth(){
         // CHECK NOT PASSING THE MAXIMUM HEALTH!!
     }
+
+    // returns true if the item parsed is the warptoken as the game should end if in custom map!
+    public boolean parseItem(String effectID){
+        
+        switch (effectID){
+            case "+":
+                setHealth(getMaxHealth());
+                System.out.println("Max health'd");
+                break;
+            case "^":
+                setDamage(getDamage()+1);
+                System.out.println("Damage up");
+                break;
+            case "@":
+                levelUp();
+                System.out.println("leveled up!");
+                return true;
+            default:
+                System.err.println("Unkown Item reciefed:" + effectID);
+                break;
+        }
+        return false;
+    }
+
+    public void resetDamage(){
+        setDamage(INITIAL_DAMAGE + level);
+    }
+
+    private void levelUp(){
+        
+        level+=1;
+    }
+
+
+
 }
 

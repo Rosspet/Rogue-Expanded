@@ -68,7 +68,7 @@ public class World {
                         entityData[3]
                     ));
                     break;
-                }2
+                }
         }
     }
 
@@ -80,24 +80,88 @@ public class World {
     public boolean runSearchScene(){
 		boolean validAction = true; // originally had it to only re-render if valid input
 		String cmd;
+        ArrayList<Entity> encountered;
         /*
         ArrayList<Entity> entities = new ArrayList<Entity>();
         entities.add(player);
         entities.add(monster); */
         map.render(entities); // REMOVE LATER
-		while (!encountered()){ // while not encountered yet.
-            System.out.println("bop");
-			map.render(entities);
-			cmd = GameEngine.scanner.next();
-			if (cmd.equals(HOME_COMMAND)){
+        boolean levelOver=false;
+		do { // while player not dead and warpstone still in world and not default. or if default, return after encounter of if player of monster dead.(make a function for this)        // while not encountered yet. !encountered()
+            map.render(entities);
+            cmd = GameEngine.scanner.next();
+            if (cmd.equals(HOME_COMMAND)){
+                
 				return false;
 			}
-			validAction = parseAction(cmd);
-		} 
-
-		System.out.println(player.getName() + " encounterd a " + monster.getName() + "!\n");
+            validAction = parseAction(cmd);
+            encountered = encountered();
+            levelOver = processEncounters(encountered);
+			
+		} while(!levelOver);
+        
+		//System.out.println(player.getName() + " encountered a " + monster.getName() + "!\n");
 		return true;
 	}
+
+    // return true if player dead
+    public boolean processEncounters(ArrayList<Entity> encountered){
+        // process all the entities, monsters first!
+        boolean playerDead;
+        boolean warpTokenObtained;
+        Entity thisEntity;
+        for (int i=0; i<encountered.size(); i++){ // replcae with iterator. and while loop
+            thisEntity = encountered.get(i);
+            if (thisEntity instanceof Monster){
+                
+                Battle battle = new Battle(player, (Monster)thisEntity);
+                playerDead = battle.runBattleScene();
+                if (playerDead){
+                    
+                    return true;
+                }
+                else { // monster dead.
+                    entities.remove(thisEntity);
+                }
+            }
+        }
+        // monsters all done, just Items left. 
+        for (int i=0; i<encountered.size(); i++){
+            thisEntity = encountered.get(i);
+            if (thisEntity instanceof Item){
+                warpTokenObtained = player.parseItem(((Item)thisEntity).getID());
+                entities.remove(thisEntity);
+                if (warpTokenObtained){
+                    System.out.println("--- level up ---");
+                    return true; // warpitemObtained.
+                } 
+            }
+        }
+        return false; // player not dead. wapItem not obtained
+}
+
+
+    /**
+     * Logic for determing whether the player and monster are in the same positon (i.e, have encountered each other)
+     * @return Returns True if the monster and player have the same positions, else False. 
+     */
+    public ArrayList<Entity> encountered(){
+        // have this return anything the player encounters
+        ArrayList<Entity> encounteredEntities = new ArrayList<Entity>();
+        Entity entity;
+        for (int i=0; i<entities.size(); i++){ //want to iterate through the actual objects since these may need to be removed from world.
+            // will iterate through entites from earliest in the world to youngest.
+            entity = entities.get(i); 
+            if (player.positionEquals(entity.getPosition())){
+                encounteredEntities.add(entity);
+            }
+        }
+
+        return encounteredEntities;
+        // now need to scan through entities and check for each Monster and then fight this exact monster object.
+        // returns true if monster and player and in the same position.
+        // return player.getPosition().positionEquals(monster.getPosition());
+    } 
 
     /**
      * Engine for rendering the game map for each valid move made. (URRRR- now being done in map with entity injection)
@@ -167,23 +231,11 @@ public class World {
     
 
     /**
-     * Logic for determing whether the player and monster are in the same positon (i.e, have encountered each other)
-     * @return Returns True if the monster and player have the same positions, else False. 
-     */
-    public boolean encountered(){
-        // have this return anything the player encounters
-        return false;
-        // now need to scan through entities and check for each Monster and then fight this exact monster object.
-        // returns true if monster and player and in the same position.
-        return player.getPosition().positionEquals(monster.getPosition());
-    } 
-    
-
-    /**
      * Resets the players Position to its default initial values.
      */
     public void reset(){
         player.resetPosition();
+        player.resetDamage();
     }
 }   
 

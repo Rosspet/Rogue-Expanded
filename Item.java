@@ -3,20 +3,24 @@
 
 public class Item extends Entity{
     
-    private String itemID; 
+    private String effectID; 
 
-    public Item(Position position, String itemID){
+    public Item(Position position, String effectID){
         super(position);
-        this.itemID = itemID;
+        this.effectID = effectID;
     }
 
     public Item(int x, int y, String itemID){
         super(x,y);
-        this.itemID = itemID;
+        this.effectID = itemID;
     }
 
     public void render(){
-        System.out.print(itemID);
+        System.out.print(effectID);
+    }
+
+    public String getID(){
+        return effectID;
     }
 
 }
