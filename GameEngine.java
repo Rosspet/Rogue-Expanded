@@ -38,6 +38,11 @@ public class GameEngine {
         }
 	}
 	
+	public static boolean getGameMode(){
+		return defaultMap;
+	}
+
+
 	/*
 	 *  Logic for running the main game loop.
 	 */
@@ -61,7 +66,6 @@ public class GameEngine {
 	private void parseCommand(String command){
 		String[] cmd_args = command.split(" ");
 		String base_cmd = cmd_args[0];
-		System.out.println(cmd_args.length);
 		switch (base_cmd) {
 			case "player":
 				player.createPlayer();
@@ -80,6 +84,22 @@ public class GameEngine {
 				break;
 			case "monster":
 				monster.createMonster();
+				returnToMain();
+				break;
+			case "load":
+				player.load();
+				break;
+			case "save":
+				try{
+					player.save();
+					System.out.println("Player data saved");
+				}
+				catch (NoPlayerException e) {
+					System.out.println("No player data to save.");
+				}
+				catch (FileNotFoundException e){
+					System.out.println("File could not be created. Error: "+e.getMessage());
+				} 
 				returnToMain();
 				break;
 			case "start":
@@ -113,23 +133,14 @@ public class GameEngine {
 					// have player and loading rest from file. 
 					//Start was entered with file name. 
 					//entities.clear();
-					String fileName = cmd_args[1]; // check for valid file - raise appropriate exception if not.
+					//String fileName = cmd_args[1]; // check for valid file - raise appropriate exception if not.
 					// set up fileStream here too and use this in start Game.
 					try {
-						inputStream = new Scanner(new FileInputStream(fileName));
+						loadMapFromFile(cmd_args[1]);
 					}
-					catch (FileNotFoundException e){ // update to try again with new file name.
-						System.err.print  ("File " + fileName + " was not found ");
-            			System.err.println("or could not be opened. \n Try again.\n"+CMD_PROMPT);
-            			//System.exit(1);
-						break;
+					catch (GameLevelNotFoundException e){
+						System.err.println("Map not found.\n"+CMD_PROMPT);
 					}
-					player.heal();
-					//entities.add(player);
-					defaultMap = false;
-					// PARSE FILE HERE, get entities 
-					//startGame(entities);
-					startGame();
 				}
 				break;
 			default:
@@ -137,6 +148,22 @@ public class GameEngine {
 				break;
 		}
 
+	}
+
+	private void loadMapFromFile(String fileName) throws GameLevelNotFoundException {
+		try {
+			inputStream = new Scanner(new FileInputStream(fileName));
+		}
+		catch (FileNotFoundException e){ // update to try again with new file name.
+			throw new GameLevelNotFoundException();
+		}
+
+		player.heal();
+		//entities.add(player);
+		defaultMap = false;
+		// PARSE FILE HERE, get entities 
+		//startGame(entities);
+		startGame();
 	}
 
 	/**

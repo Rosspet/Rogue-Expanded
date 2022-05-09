@@ -115,5 +115,14 @@ public class Position{  // ENTITY HAS ALL THESE PUBLIC THINGS - including the mo
     public Position getPosition(){
         return new Position(x,y);
     }
+
+    public static int cellDistance(Position pos1, Position pos2){
+        return Math.max(
+            Math.abs(pos1.getX() - pos2.getX()),
+            Math.abs(pos2.getY() - pos2.getY())
+            );
+    }
+
+
 }
     

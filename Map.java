@@ -10,7 +10,7 @@ public class Map { // TODO throws exception IO wtv it is (and also for main when
     private final String DEFAULT_LAND = ".";
     private int height; // y
     private int width; // x
-    private Tile[][] tiles; 
+    private Tile[][] terrain; 
     // may need to change this to be a single array for jus the rows (height) then 
     // decalre each element to be another arrray when u create;
     /**
@@ -20,12 +20,12 @@ public class Map { // TODO throws exception IO wtv it is (and also for main when
         height = DEFAULT_HEIGHT;
         width = DEFAULT_WIDTH;
         
-        tiles = new Tile[height][];
+        terrain = new Tile[height][];
         
         for (int row=0; row<height; row++){
-            tiles[row] = new Tile[width];
+            terrain[row] = new Tile[width];
             for (int col=0; col<width; col++){
-                tiles[row][col] = new Tile(DEFAULT_LAND);
+                terrain[row][col] = new Tile(DEFAULT_LAND);
             }
         }
     }
@@ -33,29 +33,38 @@ public class Map { // TODO throws exception IO wtv it is (and also for main when
     /** 
      * Map constructor for when given fileName;
      */
-    public Map(Scanner inputStream){
+    public Map(Scanner inputStream) throws IOException{
         try {
             String line = inputStream.nextLine();
             String[] size = line.split(" ");
             width = Integer.parseInt(size[0]);
             height = Integer.parseInt(size[1]);
-            tiles = new Tile[height][];
+            terrain = new Tile[height][];
             String[] terrainRow;
 
             for (int row=0; row<height; row++){
-                tiles[row] = new Tile[width];
+                terrain[row] = new Tile[width];
                 terrainRow = inputStream.nextLine().split("");
                 for (int col=0; col<width; col++){
-                    tiles[row][col] = new Tile(terrainRow[col]);
+                    terrain[row][col] = new Tile(terrainRow[col]);
                 }
             } // should have finished reading just before entities.
 
         }
-        catch (Exception e) { // more speific error?
-            System.err.println("Error reading from " + GameEngine.getFileName() + ".");
-            System.err.println(e.getMessage());
+        catch (Exception e) { // more speific error? IOException says it is never thrown.
+            throw new IOException("An error occured while loading the file.");
+            //System.err.println("Error reading from " + GameEngine.getFileName() + ".");
+            //System.err.println(e.getMessage());
         }
     }
+
+    public Map(Map map){
+        this.terrain = map.getTerrain();
+        this.height = terrain.length;
+        this.width = terrain[0].length;
+    }
+
+
     /**
      * Recieves array list of all entities and injects them to the maps tiles, to render correct thing.!
      * @param entities
@@ -67,14 +76,14 @@ public class Map { // TODO throws exception IO wtv it is (and also for main when
         Entity entity;
         while(iter.hasNext()){
             entity = iter.next();
-            tiles[entity.getY()][entity.getX()].addEntity(entity);
+            terrain[entity.getY()][entity.getX()].addEntity(entity);
             //addToMap(iter.next());
         }
 
         //entities added, now render
         for(int row=0; row<height; row++){
             for(int col=0; col<width; col++){
-                tiles[row][col].render();
+                terrain[row][col].render();
             }
             System.out.println("");
         }
@@ -85,7 +94,26 @@ public class Map { // TODO throws exception IO wtv it is (and also for main when
     public boolean isValidPosition(Position pos){
         int x = pos.getX();
         int y = pos.getY();
-        return 0<=x && x<width && 0<=y && y<height && (tiles[y][x].isTraversible());
+        return 0<=x && x<width && 0<=y && y<height && (terrain[y][x].isTraversible());
+    }
+
+    
+    public Map getMap(){
+        return new Map(this);  // calls copy constructor
+
+    }
+
+
+    // retruna copy for data access protection
+    public Tile[][] getTerrain(){
+        Tile[][] terrainCopy = new Tile[height][];
+        for (int row=0; row<height; row++){
+            terrainCopy[row] = new Tile[width];
+            for (int col=0; col<width; col++){
+                terrainCopy[row][col]=terrain[row][col];
+            }
+        }
+        return terrainCopy;
     }
 
     /* public void addToMap(Entity entity){

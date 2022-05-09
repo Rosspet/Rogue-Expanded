@@ -1,11 +1,17 @@
 import java.util.Scanner;
+import java.io.PrintWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream; 
+
+
 /**
  * This "Player" class is used to create player objects to store information 
  * about each player. This class comes with methods for updating a players position.
  * @author Ross Petridis | rpetridis@student.unimelb.edu.au | 1080249
  *
  */
-public class Player extends Creature{
+public class Player extends Creature {
 
     private static final int INITIAL_POS_X = 1;
     private static final int INITIAL_POS_Y = 1;
@@ -13,6 +19,7 @@ public class Player extends Creature{
     private static final int INITIAL_DAMAGE = 1;
     private static final int INITIAL_HEALTH = 17;
     private static final int HEALTH_MULTIPLIER = 3;
+    private static final String SAVE_FILE_NAME = "player.dat";
 
     private int level;
 
@@ -83,31 +90,7 @@ public class Player extends Creature{
 			System.out.print(String.format("Health: %d/%d\n\n", getHealth(), getMaxHealth()));
     }
 
-    /**
-     * Undoes the previous move by performing the opposite update
-     * on the players positon to what was initially peformed
-     * @param action The initial action which resulted in an invalid position and the
-     */
-    public void undoMove(String action){
-        switch (action){
-            case "w":
-                moveSouth();
-                break;
-            case "s":
-                moveNorth();
-                break;
-            case "d":
-                moveWest();
-                break;
-            case "a":
-                moveEast();
-                break;
-            default:
-                System.out.println("Internal Error: Code called UndowMove with invalid action");
-                System.exit(0);   
-                //throw new Exception("Internal Error: Code called UndowMove with invalid action");
-        }
-    }
+    
 
     /**
      * Resets a players positon to the initial default values.
@@ -163,7 +146,64 @@ public class Player extends Creature{
         level+=1;
     }
 
+    /**
+     * Undoes the previous move by performing the opposite update
+     * on the players positon to what was initially peformed
+     * @param action The initial action which resulted in an invalid position and the
+     */
+    public void undoMove(String action){
+        switch (action){
+            case "w":
+                moveSouth();
+                break;
+            case "s":
+                moveNorth();
+                break;
+            case "d":
+                moveWest();
+                break;
+            case "a":
+                moveEast();
+                break;
+            default:
+                System.out.println("Internal Error: Code called UndowMove with invalid action");
+                System.exit(0);   
+                //throw new Exception("Internal Error: Code called UndowMove with invalid action");
+        }
+    }
 
+    public String toString()  {
+        return getName()+" "+getLevel();
+        
+    }
+    
+    public void save() throws NoPlayerException, FileNotFoundException {
+        if (getName()!=null){
+            try {
+                PrintWriter outputStream = new PrintWriter(new FileOutputStream(SAVE_FILE_NAME));
+                outputStream.print(this);
+                outputStream.close();
+            }
+            finally {}
+
+        }
+        else {
+            throw new NoPlayerException(); //("Cannot save player data as no player was found!");
+        }
+    }
+
+    public void load() {
+        try {
+            Scanner inputStream = new Scanner(new FileInputStream(SAVE_FILE_NAME));
+            String[] playerData = inputStream.nextLine().split(" ");
+            setName(playerData[0]);
+            setLevel(Integer.parseInt(playerData[1]));
+        } catch (FileNotFoundException e) {
+            System.err.print  ("File " + SAVE_FILE_NAME + " was not found ");
+            System.err.println("or could not be opened.");
+        }
+        return;
+    }
 
 }
 

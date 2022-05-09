@@ -6,7 +6,9 @@
  *
  */
 import java.util.Scanner;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class World {
     
@@ -15,6 +17,7 @@ public class World {
     private Monster monster;  // change to be array list of monster!
     private Map map;
     private ArrayList<Entity> entities;
+
     /**
      * Default World Constructor
      * @param player a Player object of the player to occupy this world.
@@ -35,40 +38,57 @@ public class World {
         this.player = player;
         entities = new ArrayList<Entity>();
         entities.add(player);
-        map = new Map(inputStream);
+        try{
+            map = new Map(inputStream);
+        }
+        catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        
         // map read top seciton, then anothe function reads te entities section
         //map = new Map(fileName);
-        injectEntities(inputStream);
+        try {
+            injectEntities(inputStream);
+        }
+        catch (IOException e){
+            System.out.println(e.getMessage());
+            
+        }
+        
     }
 
-    private void injectEntities(Scanner inputStream){
+    private void injectEntities(Scanner inputStream) throws IOException{
         //String Line;
         String[] entityData;
-        while (inputStream.hasNextLine()){
-            entityData = inputStream.nextLine().split(" ");
-            
-            switch(entityData[0]){
-                case "player":
-                    player.setPosition(Integer.parseInt(entityData[1]), Integer.parseInt(entityData[2]));
-                    entities.add(player);
-                    break;
-                case "monster":
-                    entities.add(new Monster(
-                        Integer.parseInt(entityData[1]),  // x pos
-                        Integer.parseInt(entityData[2]),  // y pos
-                        entityData[3], // Name
-                        Integer.parseInt(entityData[4]), // Health
-                        Integer.parseInt(entityData[5])  // Damage
-                    ));
-                    break;
-                case "item":
-                    entities.add(new Item(
-                        Integer.parseInt(entityData[1]), 
-                        Integer.parseInt(entityData[2]), 
-                        entityData[3]
-                    ));
-                    break;
-                }
+        try{
+            while (inputStream.hasNextLine()){
+                entityData = inputStream.nextLine().split(" ");
+                switch(entityData[0]){
+                    case "player":
+                        player.setPosition(Integer.parseInt(entityData[1]), Integer.parseInt(entityData[2]));
+                        entities.add(player);
+                        break;
+                    case "monster":
+                        entities.add(new Monster(
+                            Integer.parseInt(entityData[1]),  // x pos
+                            Integer.parseInt(entityData[2]),  // y pos
+                            entityData[3], // Name
+                            Integer.parseInt(entityData[4]), // Health
+                            Integer.parseInt(entityData[5])  // Damage
+                        ));
+                        break;
+                    case "item":
+                        entities.add(new Item(
+                            Integer.parseInt(entityData[1]), 
+                            Integer.parseInt(entityData[2]), 
+                            entityData[3]
+                        ));
+                        break;
+                    }
+            }
+        }
+        catch (Exception e){
+            throw new IOException("An error occured while loading the file.");
         }
     }
 
@@ -94,7 +114,10 @@ public class World {
                 
 				return false;
 			}
-            validAction = parseAction(cmd);
+            // do monster actions first, otherwise they know your next move!
+            // probably best to do both seperately then inject.
+            moveMonsters();
+            validAction = parseAction(cmd); // TODO: add chagne were invalid commands (OR EMPTY) still result in monsters moving!
             encountered = encountered();
             levelOver = processEncounters(encountered);
 			
@@ -104,8 +127,23 @@ public class World {
 		return true;
 	}
 
+    private void moveMonsters(){
+        Entity thisEntity;
+        //Tile[][] terrain = map.getTerrain();
+        for (int i=0; i<entities.size(); i++){
+            thisEntity = entities.get(i);
+            if (thisEntity instanceof Monster){
+                ((Monster)thisEntity).makeMove(player.getPosition(), new Map(map));
+                
+            }
+        }
+    }
+
+    
+
+
     // return true if player dead
-    public boolean processEncounters(ArrayList<Entity> encountered){
+    private boolean processEncounters(ArrayList<Entity> encountered){
         // process all the entities, monsters first!
         boolean playerDead;
         boolean warpTokenObtained;
@@ -117,7 +155,6 @@ public class World {
                 Battle battle = new Battle(player, (Monster)thisEntity);
                 playerDead = battle.runBattleScene();
                 if (playerDead){
-                    
                     return true;
                 }
                 else { // monster dead.
@@ -137,15 +174,29 @@ public class World {
                 } 
             }
         }
-        return false; // player not dead. wapItem not obtained
-}
 
+        if (GameEngine.getGameMode() && noMonstersLeft()){
+            return true; // game fin.
+        }
+
+        return false; // player not dead. wapItem not obtained
+    }
+
+    private boolean noMonstersLeft(){
+        Iterator<Entity> iter = entities.iterator();
+        while(iter.hasNext()){
+            if (iter.next() instanceof Monster){
+                return false;
+            }
+        }
+        return true; //didnt return -> monsters all gone!
+    }
 
     /**
      * Logic for determing whether the player and monster are in the same positon (i.e, have encountered each other)
      * @return Returns True if the monster and player have the same positions, else False. 
      */
-    public ArrayList<Entity> encountered(){
+    private ArrayList<Entity> encountered(){
         // have this return anything the player encounters
         ArrayList<Entity> encounteredEntities = new ArrayList<Entity>();
         Entity entity;
@@ -158,34 +209,8 @@ public class World {
         }
 
         return encounteredEntities;
-        // now need to scan through entities and check for each Monster and then fight this exact monster object.
-        // returns true if monster and player and in the same position.
-        // return player.getPosition().positionEquals(monster.getPosition());
     } 
 
-    /**
-     * Engine for rendering the game map for each valid move made. (URRRR- now being done in map with entity injection)
-     */
-    /*
-    private void render(){
-        // render the current game world.
-        for (int y=0; y<HEIGHT; y++){
-            for (int x=0; x< WIDTH; x++){
-
-                if (player.getPosition().positionEquals(x,y)) {
-                    player.render();
-                }
-                else if (monster.getPosition().positionEquals(x,y)) {
-                    monster.render();
-                }
-                else {
-                    System.out.print(".");
-                }
-            }
-            System.out.println("");
-        }
-    }
-    */
 
     /**
      * Logic for parsing inputted player actions. Mainly 'w','a','s','d' or 'home'

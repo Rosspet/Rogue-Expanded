@@ -1,7 +1,7 @@
 
 public abstract class Creature extends Entity implements Fightable {
     // all creatures (player+monster) have these
-    private String name;
+    private String name=null;
     private int health;
     private int maxHealth;
     private int damage;
