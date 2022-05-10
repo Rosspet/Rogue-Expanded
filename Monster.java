@@ -56,7 +56,7 @@ public class Monster extends Creature{
     public void createMonster(){
         // name health damage
         
-        Scanner scanner = GameEngine.scanner;
+        Scanner scanner = GameEngine.getStdInScanner();
         System.out.print("Monster name: ");
         setName(scanner.next());
 
@@ -132,4 +132,7 @@ public class Monster extends Creature{
         return;
     }
     
+    public void resetPosition(){
+        setPosition(INITIAL_POS_X,INITIAL_POS_Y);
+    }
 }

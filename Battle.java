@@ -10,7 +10,6 @@ public class Battle {
     private Player player;
     private Monster monster;
 
-
     /**
 	 * Battle Class constructor for instatiating a battle between a Monster and a Player
 	 * @param player Player object to fight against the monster

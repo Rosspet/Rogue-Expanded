@@ -12,11 +12,12 @@ import java.util.Iterator;
 
 public class World {
     
-    private static final String HOME_COMMAND = "home";
     private Player player;
-    private Monster monster;  // change to be array list of monster!
-    private Map map;
+    private Monster monster; // used by default world.
     private ArrayList<Entity> entities;
+    private Map map;
+    private Scanner stdInScanner  = GameEngine.getStdInScanner();
+    private static final String HOME_COMMAND = "home";
 
     /**
      * Default World Constructor
@@ -24,41 +25,37 @@ public class World {
      * @param monster a Monster object of the monster to occupy this world.
      */
     public World(Player player, Monster monster){
-        //pass in references to objects incase players level up, loose health etc.
-        // will need to add getter and setter methods for accessing levels and changing form this class.
         this.player = player; 
-        this.monster = monster; 
+        this.monster = monster;
         entities = new ArrayList<Entity>();
         entities.add(player);
         entities.add(monster);
         map = new Map();
     }
 
-    public World(Player player, Scanner inputStream){ //GAME ENGINE SHOULD SET UP FILE STREAM
+    public World(Player player, Scanner inputStream){
         this.player = player;
         entities = new ArrayList<Entity>();
         entities.add(player);
+
         try{
-            map = new Map(inputStream);
+            map = new Map(inputStream); 
         }
         catch (IOException e) {
             System.out.println(e.getMessage());
         }
         
-        // map read top seciton, then anothe function reads te entities section
-        //map = new Map(fileName);
         try {
             injectEntities(inputStream);
         }
         catch (IOException e){
             System.out.println(e.getMessage());
-
         }
         
     }
 
     private void injectEntities(Scanner inputStream) throws IOException{
-        //String Line;
+        
         String[] entityData;
         try{
             while (inputStream.hasNextLine()){
@@ -95,68 +92,67 @@ public class World {
     /**
      * Logic for running the search scene in which the player can move around and 
      * navigate towards the monster.
-     * @return True if the player and monster encounter each other, else, returns False if player returns to home.
+     * @return True if the returnHome command was issued, else false.
      */
     public boolean runSearchScene(){ // rename to game Loop ? 
 		//boolean validAction = true; // originally had it to only re-render if valid input
 		String cmd;
         ArrayList<Entity> encountered;
-        /*
-        ArrayList<Entity> entities = new ArrayList<Entity>();
-        entities.add(player);
-        entities.add(monster); */
-        //GameEngine.scanner.nextLine();
-        //map.render(entities); // REMOVE LATER
-        boolean levelOver=false;
-		do { // while player not dead and warpstone still in world and not default. or if default, return after encounter of if player of monster dead.(make a function for this)        // while not encountered yet. !encountered()
+        boolean levelOver = false;
+
+		do {
             map.render(entities);
+
+            // get player command
             System.out.print(GameEngine.CMD_PROMPT);
-            cmd = GameEngine.scanner.nextLine(); // or the empty command is entered!
+            cmd = stdInScanner.nextLine();
+
             if (cmd.equals(HOME_COMMAND)){
-				return false;
+				return true;
 			}
-            // do monster actions first, otherwise they know your next move!
-            // probably best to do both seperately then inject.
+            
+            // move monsters, parse player cmd, process player-entity encounters
             moveMonsters();
-            //validAction = parseAction(cmd); // TODO: add chagne were invalid commands (OR EMPTY) still result in monsters moving!
-            
             parseAction(cmd);
-            
             encountered = encountered(); // check for encounters
             levelOver = processEncounters(encountered); // combine with above?
 			
 		} while(!levelOver);
-        
-		//System.out.println(player.getName() + " encountered a " + monster.getName() + "!\n");
-		return true;
+
+        // level terminated naturally.
+		return false;
 	}
 
     private void moveMonsters(){
         Entity thisEntity;
-        //Tile[][] terrain = map.getTerrain();
+        Map mapCopy = new Map(map);
         for (int i=0; i<entities.size(); i++){
             thisEntity = entities.get(i);
             if (thisEntity instanceof Monster){
-                ((Monster)thisEntity).makeMove(player.getPosition(), new Map(map)); // dont make new each time, make outside of loop and pass in copy.
+                ((Monster)thisEntity).makeMove(player.getPosition(), mapCopy);
             }
         }
     }
 
-    
 
-
-    // return true if player dead
+    // return true if level over!
+    // process all the encountered entities, monsters first!
     private boolean processEncounters(ArrayList<Entity> encountered){
-        // process all the entities, monsters first!
+        
         boolean playerDead;
         boolean warpTokenObtained;
         Entity thisEntity;
-        for (int i=0; i<encountered.size(); i++){ // replcae with iterator. and while loop
-            thisEntity = encountered.get(i);
+        
+        //monsters first
+        Iterator<Entity> iter = encountered.iterator();
+
+        while(iter.hasNext()){
+            thisEntity = iter.next();
             if (thisEntity instanceof Monster){
                 
                 Battle battle = new Battle(player, (Monster)thisEntity);
                 playerDead = battle.runBattleScene();
+
                 if (playerDead){
                     return true;
                 }
@@ -165,24 +161,27 @@ public class World {
                 }
             }
         }
-        // monsters all done, just Items left. 
-        for (int i=0; i<encountered.size(); i++){
-            thisEntity = encountered.get(i);
+        // monsters done. Now, items.
+        iter = encountered.iterator();
+        while(iter.hasNext()){
+            thisEntity = iter.next();
             if (thisEntity instanceof Item){
+
                 warpTokenObtained = player.parseItem(((Item)thisEntity).getID());
                 entities.remove(thisEntity);
                 if (warpTokenObtained){
-                    //System.out.println("--- level up ---");
-                    return true; // warpitemObtained.
+                    return true;
                 } 
             }
         }
 
+        // additional check for gameOver in default world.
         if (GameEngine.getGameMode() && noMonstersLeft()){
+            monster.resetPosition();
             return true; // game fin.
         }
 
-        return false; // player not dead. wapItem not obtained
+        return false; // player not dead. wapItem not obtained, not (default and mosnters dead)
     }
 
     private boolean noMonstersLeft(){
@@ -192,10 +191,10 @@ public class World {
                 return false;
             }
         }
-        return true; //didnt return -> monsters all gone!
+        return true; 
     }
 
-    /**
+    /** UPDATE
      * Logic for determing whether the player and monster are in the same positon (i.e, have encountered each other)
      * @return Returns True if the monster and player have the same positions, else False. 
      */
@@ -203,9 +202,10 @@ public class World {
         // have this return anything the player encounters
         ArrayList<Entity> encounteredEntities = new ArrayList<Entity>();
         Entity entity;
-        for (int i=0; i<entities.size(); i++){ //want to iterate through the actual objects since these may need to be removed from world.
-            // will iterate through entites from earliest in the world to youngest.
-            entity = entities.get(i); 
+
+        Iterator<Entity> iter = entities.iterator();
+        while(iter.hasNext()){
+            entity = iter.next();
             if (player.positionEquals(entity.getPosition())){
                 encounteredEntities.add(entity);
             }
@@ -225,7 +225,6 @@ public class World {
     private boolean parseAction(String action){
         //returns false if invalid move.
         switch (action){
-            //Position playerPosition = player.getPosition(); // returns a copy.
             case "w":
                 player.moveNorth();
                 break;
@@ -256,7 +255,6 @@ public class World {
      * @param pos A Position object containging x and y coordinates to check whether they're valid
      * @return Returns True if the pos is a valid position, else, False.
      */
-    
 
     /**
      * Resets the players Position to its default initial values.
@@ -264,6 +262,9 @@ public class World {
     public void reset(){
         player.resetPosition();
         player.resetDamage();
+        if (GameEngine.getGameMode()){
+        monster.resetPosition();
+        }
     }
 }   
 

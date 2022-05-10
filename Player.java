@@ -52,7 +52,7 @@ public class Player extends Creature {
             printPlayerInfo();
         }
         else{
-            Scanner scanner = GameEngine.scanner;
+            Scanner scanner = GameEngine.getStdInScanner();
             System.out.println("What is your character's name?");
             setName(scanner.next()); 
             System.out.println(String.format("Player '%s' created.\n", getName()));
@@ -90,8 +90,6 @@ public class Player extends Creature {
 			System.out.print(String.format("Health: %d/%d\n\n", getHealth(), getMaxHealth()));
     }
 
-    
-
     /**
      * Resets a players positon to the initial default values.
      */
@@ -108,10 +106,6 @@ public class Player extends Creature {
 
     public void render(){
         System.out.print(Character.toUpperCase(getName().charAt(0)));
-    }
-
-    public void increaseHealth(){
-        // CHECK NOT PASSING THE MAXIMUM HEALTH!!
     }
 
     // returns true if the item parsed is the warptoken as the game should end if in custom map!
@@ -183,10 +177,7 @@ public class Player extends Creature {
                 outputStream.print(this);
                 outputStream.close();
             }
-            finally {
-                
-            }
-
+            finally {}
         }
         else {
             throw new NoPlayerException(); //("Cannot save player data as no player was found!");
@@ -201,8 +192,7 @@ public class Player extends Creature {
             setLevel(Integer.parseInt(playerData[1]));
             heal();
             System.out.println("Player data loaded.");
-            
-
+        
         } catch (FileNotFoundException e) {
             System.out.print  ("No player data found.");
         }

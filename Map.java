@@ -11,8 +11,7 @@ public class Map { // TODO throws exception IO wtv it is (and also for main when
     private int height; // y
     private int width; // x
     private Tile[][] terrain; 
-    // may need to change this to be a single array for jus the rows (height) then 
-    // decalre each element to be another arrray when u create;
+
     /**
      * Default map constructor for default world
      */
@@ -51,19 +50,19 @@ public class Map { // TODO throws exception IO wtv it is (and also for main when
             } // should have finished reading just before entities.
 
         }
-        catch (Exception e) { // more speific error? IOException says it is never thrown.
+        catch (Exception e) { // more speific error? using IOException says it is never thrown.
             throw new IOException("An error occured while loading the file.");
             //System.err.println("Error reading from " + GameEngine.getFileName() + ".");
             //System.err.println(e.getMessage());
         }
     }
 
+    // Copy constructor
     public Map(Map map){
         this.terrain = map.getTerrain();
         this.height = terrain.length;
         this.width = terrain[0].length;
     }
-
 
     /**
      * Recieves array list of all entities and injects them to the maps tiles, to render correct thing.!
@@ -96,13 +95,10 @@ public class Map { // TODO throws exception IO wtv it is (and also for main when
         int y = pos.getY();
         return 0<=x && x<width && 0<=y && y<height && (terrain[y][x].isTraversible());
     }
-
     
     public Map getMap(){
         return new Map(this);  // calls copy constructor
-
     }
-
 
     // retruna copy for data access protection
     public Tile[][] getTerrain(){
@@ -115,9 +111,5 @@ public class Map { // TODO throws exception IO wtv it is (and also for main when
         }
         return terrainCopy;
     }
-
-    /* public void addToMap(Entity entity){
-        tiles[entity.getY()][entity.getX()].addEntity(entity);
-    } */
 
 }
