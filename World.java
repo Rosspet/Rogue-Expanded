@@ -52,7 +52,7 @@ public class World {
         }
         catch (IOException e){
             System.out.println(e.getMessage());
-            
+
         }
         
     }
@@ -97,8 +97,8 @@ public class World {
      * navigate towards the monster.
      * @return True if the player and monster encounter each other, else, returns False if player returns to home.
      */
-    public boolean runSearchScene(){
-		boolean validAction = true; // originally had it to only re-render if valid input
+    public boolean runSearchScene(){ // rename to game Loop ? 
+		//boolean validAction = true; // originally had it to only re-render if valid input
 		String cmd;
         ArrayList<Entity> encountered;
         /*
@@ -109,17 +109,18 @@ public class World {
         boolean levelOver=false;
 		do { // while player not dead and warpstone still in world and not default. or if default, return after encounter of if player of monster dead.(make a function for this)        // while not encountered yet. !encountered()
             map.render(entities);
-            cmd = GameEngine.scanner.next();
+            cmd = GameEngine.scanner.nextLine(); // or the empty command is entered!
             if (cmd.equals(HOME_COMMAND)){
-                
 				return false;
 			}
             // do monster actions first, otherwise they know your next move!
             // probably best to do both seperately then inject.
             moveMonsters();
-            validAction = parseAction(cmd); // TODO: add chagne were invalid commands (OR EMPTY) still result in monsters moving!
-            encountered = encountered();
-            levelOver = processEncounters(encountered);
+            //validAction = parseAction(cmd); // TODO: add chagne were invalid commands (OR EMPTY) still result in monsters moving!
+            parseAction(cmd);
+            
+            encountered = encountered(); // check for encounters
+            levelOver = processEncounters(encountered); // combine with above?
 			
 		} while(!levelOver);
         
@@ -133,8 +134,7 @@ public class World {
         for (int i=0; i<entities.size(); i++){
             thisEntity = entities.get(i);
             if (thisEntity instanceof Monster){
-                ((Monster)thisEntity).makeMove(player.getPosition(), new Map(map));
-                
+                ((Monster)thisEntity).makeMove(player.getPosition(), new Map(map)); // dont make new each time, make outside of loop and pass in copy.
             }
         }
     }
@@ -169,7 +169,7 @@ public class World {
                 warpTokenObtained = player.parseItem(((Item)thisEntity).getID());
                 entities.remove(thisEntity);
                 if (warpTokenObtained){
-                    System.out.println("--- level up ---");
+                    //System.out.println("--- level up ---");
                     return true; // warpitemObtained.
                 } 
             }
@@ -236,7 +236,7 @@ public class World {
                 player.moveEast();
                 break;
             default:
-                System.out.println("Invalid action entered. Valid actions: 'w','a','s','d','home'");
+                //System.out.println("Invalid action entered. Valid actions: 'w','a','s','d','home'");
                 return false; //invalid char entered. Ignore!
             }
 

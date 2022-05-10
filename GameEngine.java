@@ -20,6 +20,7 @@ public class GameEngine {
 	/** scanner object for the game to read from System.in */
 	public static Scanner scanner = new Scanner(System.in);
 	public static Scanner inputStream;
+	public static final String FILE_EXTENSION = ".dat";
 	private static final String CMD_PROMPT = "> ";
 	private static boolean defaultMap;
 	public static void main(String[] args) {
@@ -51,7 +52,7 @@ public class GameEngine {
 		displayMenu();
 		String command;
 		do {
-			command = scanner.nextLine();
+			command = scanner.next(); // has to be .next() otherwise doesnt pass tests. but now doesnt read in second word
 			parseCommand(command);
 				
 		} while (!command.equals("exit"));
@@ -65,6 +66,7 @@ public class GameEngine {
 	 */
 	private void parseCommand(String command){
 		String[] cmd_args = command.split(" ");
+		System.out.println(cmd_args.length);
 		String base_cmd = cmd_args[0];
 		switch (base_cmd) {
 			case "player":
@@ -88,11 +90,13 @@ public class GameEngine {
 				break;
 			case "load":
 				player.load();
+				clearNewLine();
+				System.out.print("\n"+CMD_PROMPT);
 				break;
 			case "save":
 				try{
 					player.save();
-					System.out.println("Player data saved");
+					System.out.println("Player data saved.");
 				}
 				catch (NoPlayerException e) {
 					System.out.println("No player data to save.");
@@ -136,13 +140,14 @@ public class GameEngine {
 					//String fileName = cmd_args[1]; // check for valid file - raise appropriate exception if not.
 					// set up fileStream here too and use this in start Game.
 					try {
-						loadMapFromFile(cmd_args[1]);
+						loadMapFromFile(cmd_args[1]+FILE_EXTENSION);
 					}
 					catch (GameLevelNotFoundException e){
 						System.err.println("Map not found.\n"+CMD_PROMPT);
 					}
+					break;
 				}
-				break;
+				
 			default:
 				System.out.print("Invalid command entered. Type 'commands' to see valid commands and try again.\n"+CMD_PROMPT);
 				break;
@@ -196,8 +201,8 @@ public class GameEngine {
 	 */
 	private void returnToMain(){
 		System.out.print("(Press enter key to return to main menu)\n");
-		String cmd = scanner.nextLine(); 
-		cmd = scanner.nextLine();  
+		String cmd = scanner.nextLine();
+		cmd = scanner.nextLine();
 		// for some reason i need 2 of these for it to wait for player to press enter. 
 		// But with or without the player waiting for enter, it still passes all tests which is misleading.
 		displayMenu();		 
@@ -234,6 +239,11 @@ public class GameEngine {
 
 	public static String getFileName(){
 		return fileName;
+	}
+	
+	public void clearNewLine(){
+		//String cmd = scanner.nextLine();
+		//cmd = scanner.nextLine();
 	}
 	
 

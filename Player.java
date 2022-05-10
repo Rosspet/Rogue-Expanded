@@ -120,15 +120,15 @@ public class Player extends Creature {
         switch (effectID){
             case "+":
                 setHealth(getMaxHealth());
-                System.out.println("Max health'd");
+                System.out.println("Healed!");
                 break;
             case "^":
                 setDamage(getDamage()+1);
-                System.out.println("Damage up");
+                System.out.println("Attack up!");
                 break;
             case "@":
                 levelUp();
-                System.out.println("leveled up!");
+                System.out.println("World complete! (You leveled up!)\n");
                 return true;
             default:
                 System.err.println("Unkown Item reciefed:" + effectID);
@@ -142,7 +142,6 @@ public class Player extends Creature {
     }
 
     private void levelUp(){
-        
         level+=1;
     }
 
@@ -184,7 +183,9 @@ public class Player extends Creature {
                 outputStream.print(this);
                 outputStream.close();
             }
-            finally {}
+            finally {
+                
+            }
 
         }
         else {
@@ -198,9 +199,12 @@ public class Player extends Creature {
             String[] playerData = inputStream.nextLine().split(" ");
             setName(playerData[0]);
             setLevel(Integer.parseInt(playerData[1]));
+            heal();
+            System.out.println("Player data loaded.");
+            
+
         } catch (FileNotFoundException e) {
-            System.err.print  ("File " + SAVE_FILE_NAME + " was not found ");
-            System.err.println("or could not be opened.");
+            System.out.print  ("No player data found.");
         }
         return;
     }
