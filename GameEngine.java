@@ -51,22 +51,28 @@ public class GameEngine {
 		
 		displayMenu();
 		String command;
-		String[] cmd_args;
+		String[] cmd_args=null;
 		
 		do {
+			//while (!scanner.hasNext());
 			if (scanner.hasNextLine()){
 				 // has to be .next() otherwise doesnt pass tests. but now doesnt run the map from file properly
 				cmd_args = scanner.nextLine().trim().split(" ");
-				parseCommand(cmd_args);
-			} else {
+
+			} else if (scanner.hasNext()){
 				cmd_args = scanner.next().trim().split(" ");
 			}
-			
-				
+			//System.out.println(cmd_args[0]); 	
+			//System.out.println(cmd_args[0]);
+			if (cmd_args[0]!=""){
+				parseCommand(cmd_args);
+			} // for some reason is reading in "" sometimes. its from when we print new lines i think because we removed the scanning of the empty new lines but trim them here to get ""
+
 		} while (!cmd_args[0].equals("exit"));
-		
 		// end of program!
 	}
+
+	
 
 	/**
 	 * Logic for handling different input commands and actioning the commands
@@ -76,8 +82,9 @@ public class GameEngine {
 		//String[] cmd_args = command.split(" ");
 		//String worldName=null;
 		
-		//System.out.println(cmd_args.length);
 		String base_cmd = cmd_args[0];
+		//System.out.println(base_cmd);
+
 		switch (base_cmd) {
 			case "player":
 				player.createPlayer();
@@ -165,6 +172,7 @@ public class GameEngine {
 				}
 				
 			default:
+				//System.out.println("-"+base_cmd+"-");
 				System.out.print("Invalid command entered. Type 'commands' to see valid commands and try again.\n"+CMD_PROMPT);
 				break;
 		}
@@ -204,7 +212,7 @@ public class GameEngine {
 			//level up player etc.	
 		}
 		else {
-			System.out.println("> Returning home...\n");
+			System.out.println("Returning home...\n");
 		}
 		returnToMain();
 		world.reset(); // assuming no save of positions at this stage as nothing in specification re keeping positions if returning home or finished game.
@@ -218,7 +226,7 @@ public class GameEngine {
 	private void returnToMain(){
 		System.out.print("(Press enter key to return to main menu)\n");
 		String cmd = scanner.nextLine();
-		cmd = scanner.nextLine();
+		//cmd = scanner.nextLine();
 		// for some reason i need 2 of these for it to wait for player to press enter. 
 		// But with or without the player waiting for enter, it still passes all tests which is misleading.
 		displayMenu();		 

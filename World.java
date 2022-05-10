@@ -110,6 +110,7 @@ public class World {
         boolean levelOver=false;
 		do { // while player not dead and warpstone still in world and not default. or if default, return after encounter of if player of monster dead.(make a function for this)        // while not encountered yet. !encountered()
             map.render(entities);
+            System.out.print(GameEngine.CMD_PROMPT);
             cmd = GameEngine.scanner.nextLine(); // or the empty command is entered!
             if (cmd.equals(HOME_COMMAND)){
 				return false;
@@ -118,7 +119,7 @@ public class World {
             // probably best to do both seperately then inject.
             moveMonsters();
             //validAction = parseAction(cmd); // TODO: add chagne were invalid commands (OR EMPTY) still result in monsters moving!
-            System.out.print(GameEngine.CMD_PROMPT);
+            
             parseAction(cmd);
             
             encountered = encountered(); // check for encounters
