@@ -105,7 +105,8 @@ public class World {
         ArrayList<Entity> entities = new ArrayList<Entity>();
         entities.add(player);
         entities.add(monster); */
-        map.render(entities); // REMOVE LATER
+        //GameEngine.scanner.nextLine();
+        //map.render(entities); // REMOVE LATER
         boolean levelOver=false;
 		do { // while player not dead and warpstone still in world and not default. or if default, return after encounter of if player of monster dead.(make a function for this)        // while not encountered yet. !encountered()
             map.render(entities);
@@ -117,6 +118,7 @@ public class World {
             // probably best to do both seperately then inject.
             moveMonsters();
             //validAction = parseAction(cmd); // TODO: add chagne were invalid commands (OR EMPTY) still result in monsters moving!
+            System.out.print(GameEngine.CMD_PROMPT);
             parseAction(cmd);
             
             encountered = encountered(); // check for encounters

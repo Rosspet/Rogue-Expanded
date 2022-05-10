@@ -21,7 +21,7 @@ public class GameEngine {
 	public static Scanner scanner = new Scanner(System.in);
 	public static Scanner inputStream;
 	public static final String FILE_EXTENSION = ".dat";
-	private static final String CMD_PROMPT = "> ";
+	public static final String CMD_PROMPT = "> ";
 	private static boolean defaultMap;
 	public static void main(String[] args) {
 		GameEngine gameEngine = new GameEngine();
@@ -51,11 +51,19 @@ public class GameEngine {
 		
 		displayMenu();
 		String command;
+		String[] cmd_args;
+		
 		do {
-			command = scanner.next(); // has to be .next() otherwise doesnt pass tests. but now doesnt read in second word
-			parseCommand(command);
+			if (scanner.hasNextLine()){
+				 // has to be .next() otherwise doesnt pass tests. but now doesnt run the map from file properly
+				cmd_args = scanner.nextLine().trim().split(" ");
+				parseCommand(cmd_args);
+			} else {
+				cmd_args = scanner.next().trim().split(" ");
+			}
+			
 				
-		} while (!command.equals("exit"));
+		} while (!cmd_args[0].equals("exit"));
 		
 		// end of program!
 	}
@@ -64,9 +72,11 @@ public class GameEngine {
 	 * Logic for handling different input commands and actioning the commands
 	 * @param command The inputted command from stdin.
 	 */
-	private void parseCommand(String command){
-		String[] cmd_args = command.split(" ");
-		System.out.println(cmd_args.length);
+	private void parseCommand(String[] cmd_args){
+		//String[] cmd_args = command.split(" ");
+		//String worldName=null;
+		
+		//System.out.println(cmd_args.length);
 		String base_cmd = cmd_args[0];
 		switch (base_cmd) {
 			case "player":
@@ -90,7 +100,7 @@ public class GameEngine {
 				break;
 			case "load":
 				player.load();
-				clearNewLine();
+				//clearNewLine();
 				System.out.print("\n"+CMD_PROMPT);
 				break;
 			case "save":
@@ -112,11 +122,16 @@ public class GameEngine {
 					returnToMain();
 					break;
 				}
+
+				/*if (scanner.hasNext()){
+					worldName = scanner.nextLine().trim(); 
+				}*/
 				
-				if (cmd_args.length<=1){
+				if (cmd_args.length<=1){ //
 					// start default game.
 					if (monster.getName()==null){
 						System.out.println("No monster found, please create a monster with 'monster' first.\n");
+						//System.out.flush();
 						returnToMain();
 						break;
 					}
@@ -143,7 +158,8 @@ public class GameEngine {
 						loadMapFromFile(cmd_args[1]+FILE_EXTENSION);
 					}
 					catch (GameLevelNotFoundException e){
-						System.err.println("Map not found.\n"+CMD_PROMPT);
+						System.out.println("Map not found.\n");
+						returnToMain();
 					}
 					break;
 				}
@@ -188,7 +204,7 @@ public class GameEngine {
 			//level up player etc.	
 		}
 		else {
-			System.out.println("\n> Returning home...\n");
+			System.out.println("> Returning home...\n");
 		}
 		returnToMain();
 		world.reset(); // assuming no save of positions at this stage as nothing in specification re keeping positions if returning home or finished game.
