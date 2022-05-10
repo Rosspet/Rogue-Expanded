@@ -103,7 +103,7 @@ public class Monster extends Creature{
                 }
                 else {
                     return;
-                }
+                } 
             }
 
             // still trying to move...
