@@ -14,8 +14,6 @@ public class GameEngine {
 
 	private Player player = new Player(); 
 	private Monster monster = new Monster();
-	//private ArrayList<Entity> entities = new ArrayList<Entity>();
-	
 	private static String fileName;
 	/** scanner object for the game to read from System.in */
 	public static Scanner scanner = new Scanner(System.in);
