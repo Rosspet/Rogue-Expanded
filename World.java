@@ -126,8 +126,11 @@ public class World {
     private void moveMonsters(){
         Entity thisEntity;
         Map mapCopy = new Map(map);
-        for (int i=0; i<entities.size(); i++){
-            thisEntity = entities.get(i);
+        Iterator<Entity> iter = entities.iterator();
+        while(iter.hasNext()){
+        //for (int i=0; i<entities.size(); i++){
+            //thisEntity = entities.get(i);
+            thisEntity = iter.next();
             if (thisEntity instanceof Monster){
                 ((Monster)thisEntity).makeMove(player.getPosition(), mapCopy);
             }

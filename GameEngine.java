@@ -175,8 +175,8 @@ public class GameEngine {
 	 */
 	private void returnToMain(){
 		System.out.print("(Press enter key to return to main menu)\n");
-		String cmd = scanner.nextLine();
-		//cmd = scanner.nextLine();
+		scanner.nextLine();
+		//scanner.nextLine();
 		displayMenu();		 
 	}
 
