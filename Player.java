@@ -115,39 +115,15 @@ public class Player extends Creature {
     public void render(){
         System.out.print(Character.toUpperCase(getName().charAt(0)));
     }
-    /* Having items interactWwith players now.
-    // returns true if the item parsed is the warptoken as the game should end if in custom map!
-    public boolean parseItem(String effectID){
-        
-        switch (effectID){
-            case "+":
-                setHealth(getMaxHealth());
-                System.out.println("Healed!");
-                break;
-            case "^":
-                setDamage(getDamage()+1);
-                System.out.println("Attack up!");
-                break;
-            case "@":
-                levelUp();
-                System.out.println("World complete! (You leveled up!)\n");
-                return true;
-            default:
-                System.err.println("Unkown Item reciefed:" + effectID);
-                break;
-        }
-        return false;
-    }
-    */
-
+    
     public void resetDamage(){
         setDamage(INITIAL_DAMAGE + level);
     }
-
+    
     public void levelUp(){
         level+=1;
     }
-
+    
     /**
      * Undoes the previous move by performing the opposite update
      * on the players positon to what was initially peformed
@@ -173,12 +149,17 @@ public class Player extends Creature {
                 //throw new Exception("Internal Error: Code called UndowMove with invalid action");
         }
     }
-
+    
+    @Override
     public String toString()  {
         return getName()+" "+getLevel();
-        
     }
     
+    /**
+     * Logic for facilitating the saving of player data to default file location
+     * @throws NoPlayerException If no player exists in the game to be saved
+     * @throws FileNotFoundException If method fails to create the file, or open if already exists.
+     */
     public void save() throws NoPlayerException, FileNotFoundException {
         if (getName()!=null){
             try {
@@ -192,7 +173,10 @@ public class Player extends Creature {
             throw new NoPlayerException(); //("Cannot save player data as no player was found!");
         }
     }
-
+    
+    /**
+     * method for reading in player data stored in the default file location.
+     */
     public void load() {
         try {
             Scanner inputStream = new Scanner(new FileInputStream(SAVE_FILE_NAME));
@@ -201,12 +185,37 @@ public class Player extends Creature {
             setLevel(Integer.parseInt(playerData[1]));
             heal();
             System.out.println("Player data loaded.");
-        
+            
         } catch (FileNotFoundException e) {
             System.out.print  ("No player data found.");
         }
         return;
     }
-
+    
 }
 
+
+/* Having items interactWwith players now.
+// returns true if the item parsed is the warptoken as the game should end if in custom map!
+public boolean parseItem(String effectID){
+    
+    switch (effectID){
+        case "+":
+            setHealth(getMaxHealth());
+            System.out.println("Healed!");
+            break;
+        case "^":
+            setDamage(getDamage()+1);
+            System.out.println("Attack up!");
+            break;
+        case "@":
+            levelUp();
+            System.out.println("World complete! (You leveled up!)\n");
+            return true;
+        default:
+            System.err.println("Unkown Item reciefed:" + effectID);
+            break;
+    }
+    return false;
+}
+*/

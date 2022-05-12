@@ -22,6 +22,18 @@ public class Tile {
     }
 
     /**
+     * Copy constructor
+     * @param tile The tile to make a duplicate of
+     * @return Copy of inputted Tile object
+     */
+    public Tile(Tile tile){
+        this.landType = tile.landType;
+        this.traversible = tile.traversible;
+    }
+
+
+
+    /**
      * Method for rendering this tile. Will render the landType unless an entity(s)
      * are here, in which case, the entity first added into the tile will be
      * rendered.

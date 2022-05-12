@@ -1,4 +1,7 @@
-
+/**
+ * Entity abstract class for all entities in the world.
+ * @author Ross Petridis | rpetridis@student.unimelb.edu.au | 1080249
+ */
 public abstract class Entity extends Position{
 
     public Entity(Position position){
@@ -12,7 +15,9 @@ public abstract class Entity extends Position{
         super();
     }
 
-    // Each entity should know how to render itself.
+    /**
+     * Every entity should know how to render itself.
+     */
     public abstract void render();
 
 }
