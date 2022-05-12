@@ -1,12 +1,8 @@
 import java.util.Scanner;
-
-import javax.swing.InputMap;
-
 import java.io.PrintWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream; 
+import java.io.FileOutputStream; 
 
 
 /**
