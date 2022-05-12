@@ -4,24 +4,31 @@ import java.util.Scanner;
 /**
  * Class for instatiating Monster objects to store information
  * about a particular monster and fascilate monster entity in game world
- * and in battle.
+ * and in battle. This extends the Creature class.
  * @author Ross Petridis | rpetridis@gmail.com | 1080249
  */
 public class Monster extends Creature{
 
     private static final int INITIAL_POS_X = 4;
     private static final int INITIAL_POS_Y = 2;
-    public static final int VIEW_DIST = 2;
+    public static final int VIEW_DIST = 2; // view distance for detecting player's on map.
 
     /**
-     * monster Constructor which initialises their position.
+     * default Constructor which initialises their position.
      */
     public Monster(){
         //currently all monsters set to same initial position.
         setPosition(new Position(INITIAL_POS_X,INITIAL_POS_Y)); // starting position for monster 
         
     }
-
+    /**
+     * Constructor to initialise monster according to information given in input files
+     * @param x The initial x coordinate of monster on map
+     * @param y The initial y coordinate of monster on map 
+     * @param name The name of the monster
+     * @param health The initial health of the monster
+     * @param damage The damage the monster can dish out
+     */
     public Monster(int x, int y, String name, int health, int damage){
         super(x,y);
         setName(name);
@@ -52,6 +59,7 @@ public class Monster extends Creature{
 
     /**
      * Logic for prompting user input and assigning values to this monster's attribute.
+     * Used for monsters within the default world
      */
     public void createMonster(){
         // name health damage
@@ -71,29 +79,35 @@ public class Monster extends Creature{
         setDamage(scanner.nextInt());
         System.out.println("Monster '" + getName() + "' created.\n");
     }
-
+    
+    /**
+     * Method for rendering monsters
+     */
     public void render(){
         System.out.print(Character.toLowerCase(getName().charAt(0)));
     }
 
-
+    /**
+     * This function will move the monster towards the player on the map. The function contains the logic for simple monster AI.
+     * @param playerPos The player to move towards
+     * @param map The map to move around in. Contains information about whether attempted traversal will be valid or not.
+     */
     public void makeMove(Position playerPos, Map map){
-        // player hasnt made the move yet at this stage, so playPos is as of start of the loop.
-        // move monstere towards player if within reigon!!
+
         Position monsterPos = getPosition();
         if (Position.cellDistance(playerPos, monsterPos)<=Monster.VIEW_DIST){
-            // if off in east/west, move accordingly but only if land is traversible
+
             int monsterX = monsterPos.getX();
             int playerX = playerPos.getX();
 
-            // try move in x first
+            // try move in x first - but only if land is traverisble
             if (playerX<monsterX){
                 moveWest();
                 if (!map.isValidPosition(getPosition())){
                     moveEast();
                 }
-                else { //position is valid and in correct direction!
-                    return;
+                else { 
+                    return; //position is valid and in correct direction!
                 }
             }
             else if (playerX>monsterX) {
@@ -106,7 +120,7 @@ public class Monster extends Creature{
                 } 
             }
 
-            // still trying to move...
+            // still trying to move... try y direction
             int monsterY = monsterPos.getY();
             int playerY = playerPos.getY();
 
@@ -132,6 +146,9 @@ public class Monster extends Creature{
         return;
     }
     
+    /**
+     * Re initialises monster position. Used between default games.
+     */
     public void resetPosition(){
         setPosition(INITIAL_POS_X,INITIAL_POS_Y);
     }

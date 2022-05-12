@@ -170,7 +170,7 @@ public class World {
             thisEntity = iter.next();
             if (thisEntity instanceof Item){
 
-                warpTokenObtained = player.parseItem(((Item)thisEntity).getID());
+                warpTokenObtained = ((Item)thisEntity).interactWith(player);//player.parseItem(((Item)thisEntity).getID());
                 entities.remove(thisEntity);
                 if (warpTokenObtained){
                     return true;

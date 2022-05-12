@@ -1,11 +1,24 @@
-
+/**
+ * This class extends the Entity class and is designed to hold the methods for movable entities, "creatures" i the map world. 
+ * Where these creatures are also capable of fighting with each other, hence the implementation of the Fightable interface.
+ */
 public abstract class Creature extends Entity implements Fightable {
     // all creatures (player+monster) have these
     private String name=null;
     private int health;
     private int maxHealth;
     private int damage;
-    
+    private int DEFAULT_DAMAGE = 1;
+    private int DEFAULT_HEALTH = 1;
+    private int DEFAULT_MAX_HEALTH = 1;
+    /**
+     * Creature constructor for when reading from the world file
+     * @param pos Position of this creature
+     * @param name Name of this creature
+     * @param health Initial health of this creature
+     * @param maxHealth Max health of this creature
+     * @param damage Damage this creature can deal to others
+     */
     public Creature(
         Position pos, 
         String name, 
@@ -21,13 +34,20 @@ public abstract class Creature extends Entity implements Fightable {
         this.damage = damage;
         
     }
+    /**
+     * Constructor used to create creature for default world gameplay
+     * @param x
+     * @param y
+     */
     public Creature(int x, int y){
         super(x, y);
     }
 
-    // not really used because we intialise a monster to none.
+
+    // Default creature constructur
     public Creature(){
-        this(new Position(), null , 1, 1, 0);
+        // Call another constructor in this class with following default values.
+        this(new Position(), null , 1, 1, 1);
     }
     
     // Implement Fightable

@@ -23,22 +23,30 @@ public class Player extends Creature {
 
     private int level;
 
-    //private Position position = new Position(INITIAL_POS_X,INITIAL_POS_Y);
-    
-    /**
-     * No arg constructor for initialisation of player and its attributes to default.
-     */
-    public Player(){
-        level = INITIAL_LEVEL; 
-        setDamage(INITIAL_DAMAGE + level);
-        setHealth(INITIAL_HEALTH + level * HEALTH_MULTIPLIER);
-        setMaxHealth(getHealth()); // health initialised to max!
-    }
     /**
      * Constructor for when loading from file
      */
     public Player(String name, int level){
-        this.level = INITIAL_LEVEL; 
+        super(
+            new Position(),
+            name, 
+            INITIAL_HEALTH + level * HEALTH_MULTIPLIER, // initial health
+            INITIAL_HEALTH + level * HEALTH_MULTIPLIER, // max health
+            INITIAL_DAMAGE + level // initial damage
+        );
+        /*this.level = INITIAL_LEVEL; 
+        setDamage(INITIAL_DAMAGE + level);
+        setHealth(INITIAL_HEALTH + level * HEALTH_MULTIPLIER);
+        setMaxHealth(getHealth());*/ // health initialised to max!
+    }
+
+    //private Position position = new Position(INITIAL_POS_X,INITIAL_POS_Y);
+    
+    /**
+    * No arg constructor for initialisation of player and its attributes to default but leaving name as None.
+    */
+    public Player(){
+        level = INITIAL_LEVEL; 
         setDamage(INITIAL_DAMAGE + level);
         setHealth(INITIAL_HEALTH + level * HEALTH_MULTIPLIER);
         setMaxHealth(getHealth()); // health initialised to max!
@@ -107,7 +115,7 @@ public class Player extends Creature {
     public void render(){
         System.out.print(Character.toUpperCase(getName().charAt(0)));
     }
-
+    /* Having items interactWwith players now.
     // returns true if the item parsed is the warptoken as the game should end if in custom map!
     public boolean parseItem(String effectID){
         
@@ -130,12 +138,13 @@ public class Player extends Creature {
         }
         return false;
     }
+    */
 
     public void resetDamage(){
         setDamage(INITIAL_DAMAGE + level);
     }
 
-    private void levelUp(){
+    public void levelUp(){
         level+=1;
     }
 
