@@ -20,7 +20,7 @@ public class World {
     private Map map;
     private Scanner stdInScanner = GameEngine.getStdInScanner();
     private static final String HOME_COMMAND = "home";
-
+    private boolean defaultMap;
     /**
      * Default World Constructor
      * 
@@ -30,6 +30,7 @@ public class World {
     public World(Player player, Monster monster) {
         this.player = player;
         this.monster = monster;
+        this.defaultMap = false;
         entities = new ArrayList<Entity>();
         entities.add(player);
         entities.add(monster);
@@ -44,6 +45,7 @@ public class World {
      *                    from.
      */
     public World(Player player, Scanner inputStream) {
+        this.defaultMap = true;
         this.player = player;
         entities = new ArrayList<Entity>();
         entities.add(player);
@@ -200,7 +202,7 @@ public class World {
         }
 
         // additional check for gameOver in default world.
-        if (GameEngine.getGameMode() && noMonstersLeft()) {
+        if (defaultMap && noMonstersLeft()) {
             monster.resetPosition();
             return true; // game fin.
         }
@@ -289,7 +291,7 @@ public class World {
     public void reset() {
         player.resetPosition();
         player.resetDamage();
-        if (GameEngine.getGameMode()) {
+        if (defaultMap) {
             monster.resetPosition();
         }
     }

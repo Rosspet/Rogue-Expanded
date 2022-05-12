@@ -13,12 +13,12 @@ public class GameEngine {
 
 	private Player player = new Player();
 	private Monster monster = new Monster();
-	private static boolean defaultMap;
+	private boolean defaultMap;
 
 	/** scanner object for the game to read from System.in */
 	private static Scanner scanner = new Scanner(System.in);
-	private static Scanner inputStream;
-	private static String fileName;
+	private Scanner inputStream;
+	private String fileName;
 	public static final String FILE_EXTENSION = ".dat";
 	public static final String CMD_PROMPT = "> ";
 
@@ -211,7 +211,7 @@ public class GameEngine {
 
 	}
 
-	public static String getFileName() {
+	public String getFileName() {
 		return fileName;
 	}
 
@@ -237,7 +237,7 @@ public class GameEngine {
 	 * 
 	 * @return true if game mode is default
 	 */
-	public static boolean getGameMode() {
+	public boolean getGameMode() {
 		return defaultMap;
 	}
 
