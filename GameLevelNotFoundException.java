@@ -4,7 +4,7 @@
  */
 public class GameLevelNotFoundException extends Exception{
     public GameLevelNotFoundException(){
-        super("Game level not found");
+        super("Map not found.\n");
     }
     public GameLevelNotFoundException(String message){
         super(message);

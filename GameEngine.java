@@ -119,7 +119,8 @@ public class GameEngine {
 					try {
 						startFromFile(cmd_args[1] + FILE_EXTENSION);
 					} catch (GameLevelNotFoundException e) {
-						System.out.println("Map not found.\n");
+						//System.out.println("Map not found.\n");
+						System.out.println(e.getMessage());
 						returnToMain();
 					}
 					break;
