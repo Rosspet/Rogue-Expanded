@@ -165,8 +165,8 @@ public class GameEngine {
 		if (returnedHome) {
 			System.out.println("Returning home...\n");
 		}
+		world.reset(); // dont heal player until re starting. But update the level here (and new maxHealth)
 		returnToMain();
-		world.reset(); // dont heal player until re starting.
 		// game over!
 	}
 

@@ -291,6 +291,7 @@ public class World {
     public void reset() {
         player.resetPosition();
         player.resetDamage();
+        player.updateMaxHealth();
         if (defaultMap) {
             monster.resetPosition();
         }

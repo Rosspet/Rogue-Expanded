@@ -185,7 +185,7 @@ public class Player extends Creature {
             setName(playerData[0]);
             setLevel(level);
             resetDamage();
-            setMaxHealth(INITIAL_HEALTH+level*HEALTH_MULTIPLIER);
+            updateMaxHealth();
             heal();
             System.out.println("Player data loaded.");
             
@@ -193,6 +193,10 @@ public class Player extends Creature {
             System.out.print  ("No player data found.");
         }
         return;
+    }
+
+    public void updateMaxHealth(){
+        setMaxHealth(INITIAL_HEALTH+level*HEALTH_MULTIPLIER);
     }
     
 }
