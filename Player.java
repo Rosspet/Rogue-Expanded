@@ -181,8 +181,11 @@ public class Player extends Creature {
         try {
             Scanner inputStream = new Scanner(new FileInputStream(SAVE_FILE_NAME));
             String[] playerData = inputStream.nextLine().split(" ");
+            int level = Integer.parseInt(playerData[1]);
             setName(playerData[0]);
-            setLevel(Integer.parseInt(playerData[1]));
+            setLevel(level);
+            resetDamage();
+            setMaxHealth(INITIAL_HEALTH+level*HEALTH_MULTIPLIER);
             heal();
             System.out.println("Player data loaded.");
             

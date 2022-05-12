@@ -30,7 +30,7 @@ public class World {
     public World(Player player, Monster monster) {
         this.player = player;
         this.monster = monster;
-        this.defaultMap = false;
+        this.defaultMap = true;
         entities = new ArrayList<Entity>();
         entities.add(player);
         entities.add(monster);
@@ -45,7 +45,7 @@ public class World {
      *                    from.
      */
     public World(Player player, Scanner inputStream) {
-        this.defaultMap = true;
+        this.defaultMap = false;
         this.player = player;
         entities = new ArrayList<Entity>();
         entities.add(player);
