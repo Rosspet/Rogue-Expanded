@@ -1,8 +1,12 @@
 import java.util.Scanner;
+
+import javax.swing.InputMap;
+
 import java.io.PrintWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream; 
+import java.io.FileOutputStream;
+import java.io.InputStream; 
 
 
 /**
@@ -164,7 +168,7 @@ public class Player extends Creature {
         if (getName()!=null){
             try {
                 PrintWriter outputStream = new PrintWriter(new FileOutputStream(SAVE_FILE_NAME));
-                outputStream.print(this);
+                outputStream.print(this); // will use custome toString() method
                 outputStream.close();
             }
             finally {}
@@ -178,8 +182,9 @@ public class Player extends Creature {
      * method for reading in player data stored in the default file location.
      */
     public void load() {
+        Scanner inputStream=null;;
         try {
-            Scanner inputStream = new Scanner(new FileInputStream(SAVE_FILE_NAME));
+            inputStream = new Scanner(new FileInputStream(SAVE_FILE_NAME));
             String[] playerData = inputStream.nextLine().split(" ");
             int level = Integer.parseInt(playerData[1]);
             setName(playerData[0]);
@@ -192,6 +197,11 @@ public class Player extends Creature {
         } catch (FileNotFoundException e) {
             System.out.print  ("No player data found.");
         }
+        finally {
+            inputStream.close();
+        }
+        
+        
         return;
     }
 

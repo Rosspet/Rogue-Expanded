@@ -61,6 +61,7 @@ public class World {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+        inputStream.close();
 
     }
 
