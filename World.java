@@ -13,6 +13,12 @@ import java.util.Iterator;
 
 public class World {
 
+    private static final String NORTH = "w";
+    private static final String SOUTH = "s";
+    private static final String EAST = "d";
+    private static final String WEST = "a";
+
+
     private Player player;
     private Monster monster; // used by default world.
     private ArrayList<Entity> entities; // ArrayList for storing all entities in the world. helps maintain order of
@@ -260,16 +266,16 @@ public class World {
     private boolean parseAction(String action) {
         // returns false if invalid move.
         switch (action) {
-            case "w":
+            case NORTH:
                 player.moveNorth();
                 break;
-            case "s":
+            case SOUTH:
                 player.moveSouth();
                 break;
-            case "a":
+            case WEST:
                 player.moveWest();
                 break;
-            case "d":
+            case EAST:
                 player.moveEast();
                 break;
             default:

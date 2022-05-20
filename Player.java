@@ -20,6 +20,10 @@ public class Player extends Creature {
     private static final int INITIAL_HEALTH = 17;
     private static final int HEALTH_MULTIPLIER = 3;
     private static final String SAVE_FILE_NAME = "player.dat";
+    private static final String NORTH = "w";
+    private static final String SOUTH = "s";
+    private static final String EAST = "d";
+    private static final String WEST = "a";
 
     private int level;
 
@@ -131,16 +135,16 @@ public class Player extends Creature {
      */
     public void undoMove(String action){
         switch (action){
-            case "w":
+            case NORTH:
                 moveSouth();
                 break;
-            case "s":
+            case SOUTH:
                 moveNorth();
                 break;
-            case "d":
+            case EAST:
                 moveWest();
                 break;
-            case "a":
+            case WEST:
                 moveEast();
                 break;
             default:
